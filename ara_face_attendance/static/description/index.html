@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ARA Face Attendance</title>
+    <meta name="description" content="ARA Face Attendance is a face recognition-based attendance system built on top of the ARA Base Identify Face engine.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f8fafc;
+            color: #1f2937;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 24px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        header p {
+            margin-top: 8px;
+            color: #cbd5f5;
+        }
+        main {
+            max-width: 1000px;
+            margin: auto;
+            padding: 32px;
+        }
+        section {
+            margin-bottom: 32px;
+        }
+        h2 {
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background-color: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ARA Face Attendance</h1>
+    <p>Face Recognition-Based Attendance System</p>
+</header>
+
+<main>
+
+    <section>
+        <h2>Overview</h2>
+        <p>
+            <strong>ARA Face Attendance</strong> is an attendance management module that utilizes
+            face recognition technology to record employee check-in and check-out activities.
+            This module is built on top of the
+            <code>ara_base_identify_face</code> engine to ensure accurate and reliable facial identification.
+        </p>
+    </section>
+
+    <section>
+        <h2>Purpose</h2>
+        <p>
+            The purpose of this module is to replace or enhance traditional attendance methods
+            (such as cards, PINs, or fingerprints) with a more secure and contactless
+            face recognition solution.
+        </p>
+    </section>
+
+    <section>
+        <h2>Key Features</h2>
+        <ul>
+            <li>Face-based employee check-in and check-out</li>
+            <li>Real-time face identification and verification</li>
+            <li>Integration with base face recognition engine</li>
+            <li>Attendance logging with timestamps</li>
+            <li>Reduced fraud and proxy attendance</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>System Architecture</h2>
+        <p>
+            <strong>ARA Face Attendance</strong> acts as an implementation layer, while
+            <code>ara_base_identify_face</code> provides the core face detection, matching,
+            and identification logic.
+        </p>
+        <ul>
+            <li>Face capture (camera or image input)</li>
+            <li>Face identification via base engine</li>
+            <li>Employee matching and validation</li>
+            <li>Attendance record creation</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Use Cases</h2>
+        <ul>
+            <li>Employee daily attendance</li>
+            <li>Office or factory access attendance</li>
+            <li>Remote or mobile attendance verification</li>
+            <li>Secure workforce time tracking</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>How To Use ?</h2>
+        <ul>
+        <li> Open Attendances => Kiosk Mode</li>
+          <img class="col-md-8" src="att/1.png" />
+        <br/>
+        <li>You can choose employee , and open popup camera</li>
+            <img class="col-md-8" src="att/2.png" />
+        <li>Example if failed</li>
+            <img class="col-md-8" src="att/3.png" />
+        <li>Example if Success</li>
+            <img class="col-md-8" src="att/4.jpg" />
+            <br/>
+            <img class="col-md-8" src="att/5.jpg" />
+
+        </ul>
+       
+    </section>
+
+</main>
+
+<footer>
+    &copy; 2025 ARA SOFT
+</footer>
+
+</body>
+</html>
