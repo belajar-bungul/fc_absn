@@ -19,7 +19,7 @@
     "installable": True,
     "auto_install": False,
     "application": False,
-    "price": 58.22,
+    "price": 48.12,
     "currency": "USD",
     "images": ['static/description/banner.gif'],
 }
