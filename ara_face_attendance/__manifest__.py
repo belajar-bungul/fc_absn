@@ -21,4 +21,5 @@
     "application": False,
     "price": 58.22,
     "currency": "USD",
+    "images": ['static/description/banner.gif'],
 }
