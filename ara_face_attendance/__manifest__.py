@@ -1,5 +1,5 @@
 {
-    "name": "Face Identification Attendance",
+    "name": "Face Attendance",
     "version": "18.0.0.0.0",
     "category": "Tools",
     "summary": """Face Identification login Attendance""",
