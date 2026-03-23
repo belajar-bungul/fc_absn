@@ -1,0 +1,85 @@
+/* Face Recognition Modal Styles */
+#faceRecognitionModal .modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+#faceRecognitionModal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+#faceRecognitionModal .modal-header .btn-close {
+    filter: invert(1);
+}
+
+#faceRecognitionModal .modal-body {
+    padding: 30px;
+    background-color: #f8f9fa;
+}
+
+#faceRecognitionModal .img-thumbnail {
+    border: 3px solid #dee2e6;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#faceRecognitionModal .progress {
+    height: 25px;
+    border-radius: 12px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+#faceRecognitionModal .progress-bar {
+    transition: width 0.5s ease;
+    font-weight: bold;
+}
+
+#faceRecognitionModal #faceCanvas {
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+#faceRecognitionModal .alert {
+    border-radius: 8px;
+    border: none;
+    margin-top: 15px;
+}
+
+#faceRecognitionModal .modal-footer {
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+    padding: 20px 30px;
+}
+
+#faceRecognitionModal .btn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#faceRecognitionModal .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+#faceRecognitionModal .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#faceRecognitionModal .btn-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    color: white;
+}
+
+#faceRecognitionModal .btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+}

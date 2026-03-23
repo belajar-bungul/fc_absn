@@ -1,18 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-inherit="hr_attendance.public_kiosk_app" t-inherit-mode="extension">
-        <xpath expr="." position="inside">
-           <div id="WebCamModal"
-                style="display: block;pointer-events: none; position: fixed; z-index: 9999; top: 50%; left: 30%; transform: translate(-50%, -50%); width: 50px; background-color: transparent">
-                <div class="container">
-                    <video id="video" width="770" height="770" autoplay=""
-                           t-ref="camera_ref"
-                           muted=""
-                           style="display: block;margin-top: 213px; margin-left: 150px;"/>
-                    <img id="face_image_ref" style="visibility:hidden;height:400px;width:400px"
-                         t-ref="face_image_ref"/>
+        <!-- improve xml -->
+        <xpath expr="//CardLayout" position="replace">
+            <CardLayout fromTrialMode="this.props.fromTrialMode" companyImageUrl="this.companyImageUrl" kioskReturn.bind="kioskReturn">
+                <t t-if="this.state.active_display === 'settings'">
+                    <t t-call="hr_attendance.PublicKiosksSettingScreen"/>
+                </t>
+                
+                <!-- change if main -->
+                <t t-if="this.state.active_display === 'main'">
+                    <div class="o_hr_kiosk_mode_bottom d-flex justify-content-center align-items-center my-5">
+                        <t t-if="this.props.kioskMode !== 'barcode'">
+                            <button t-on-click="() => this.switchDisplay('manual')"  
+                                    class="btn btn-light btn-lg rounded-3">
+                                <i class="fa fa-user-o me-2"/>
+                                <span>Choose Employee</span>
+                            </button>
+                        </t>
+                    </div>
+                </t>
+                
+                <!-- change if manual -->
+                <t t-if="this.state.active_display === 'manual'">
+                    <KioskManualSelection
+                        displayBackButton="!this.manualKioskMode || this.props.fromTrialMode"
+                        departments="this.props.departments"
+                        onSelectEmployee="(e) => this.kioskConfirm(e)"
+                        onClickBack="() => this.kioskReturn()"
+                        token="this.props.token"/>
+                </t>
+                
+                <t t-if="this.state.active_display === 'greet'">
+                    <KioskGreetings employeeData="this.employeeData" kioskReturn="() => this.kioskReturn(true)"/>
+                </t>
+                
+                <t t-if="this.state.active_display === 'pin'">
+                    <KioskPinCode
+                        employeeData="this.employeeData"
+                        onPinConfirm="(id, pin) => this.onManualSelection(id, pin)"
+                        onClickBack="() => this.kioskReturn()"/>
+                </t>
+                
+                <!-- Hidden image for face recognition -->
+                <img id="face_image_ref" style="visibility:hidden;height:400px;width:400px"
+                    t-ref="face_image_ref"/>
+                
+                <!-- Camera Modal -->
+                <div t-if="state.showCameraModal" 
+                    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: white; border-radius: 10px; padding: 30px; max-width: 800px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                        <!-- Modal Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; color: #333;">
+                                <t t-if="state.scanningStatus === 'attendance_error'">Attendance Error</t>
+                                <t t-else="">Face Identification</t>
+                            </h3>
+                            <button t-on-click="_closeCameraModal" 
+                                    style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666;">
+                                ×
+                            </button>
+                        </div>
+                        
+                        <!-- Camera Preview -->
+                        <div style="position: relative; width: 100%; height: 400px; background: #000; border-radius: 5px; overflow: hidden; margin-bottom: 20px;">
+                            <video id="video" 
+                                t-ref="camera_ref"
+                                autoplay="autoplay"
+                                muted=""
+                                t-if="state.scanningStatus !== 'attendance_error'"
+                                style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </video>
+                            
+                            <!-- Error Display Area -->
+                            <div t-if="state.scanningStatus === 'attendance_error'" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(231, 76, 60, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; padding: 30px;">
+                                <div style="font-size: 60px; margin-bottom: 20px;">⚠️</div>
+                                <p style="margin: 0 0 10px 0; font-size: 24px; font-weight: bold; text-align: center;">
+                                    <t t-esc="state.errorTitle || 'Attendance Error'"/>
+                                </p>
+                                <p style="margin: 0; font-size: 18px; text-align: center; max-width: 90%; line-height: 1.4;">
+                                    <t t-esc="state.errorMessage || 'An error occurred while processing attendance.'"/>
+                                </p>
+                                <div style="margin-top: 30px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 8px; max-width: 90%;">
+                                    <p style="margin: 0; font-size: 14px; font-style: italic;">
+                                        <t t-if="state.errorDetails">
+                                            <t t-esc="state.errorDetails"/>
+                                        </t>
+                                        <t t-else="">
+                                            Please try again or contact administrator.
+                                        </t>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Scanning Status Overlay -->
+                            <div t-if="state.scanningStatus === 'scanning'" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+                                <div style="width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+                                <p style="margin: 0; font-size: 18px;">Scanning face... Please stay still</p>
+                            </div>
+                            
+                            <div t-if="state.scanningStatus === 'success'" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 204, 113, 0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+                                <div style="font-size: 60px; margin-bottom: 20px;">✓</div>
+                                <p style="margin: 0; font-size: 24px; font-weight: bold;">Face Recognized!</p>
+                                <p style="margin: 5px 0 0 0; font-size: 16px;">Processing attendance...</p>
+                            </div>
+                            
+                            <div t-if="state.scanningStatus === 'failed'" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(231, 76, 60, 0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+                                <div style="font-size: 60px; margin-bottom: 20px;">✗</div>
+                                <p style="margin: 0; font-size: 24px; font-weight: bold;">Recognition Failed</p>
+                                <p style="margin: 5px 0 0 0; font-size: 16px;">
+                                    <t t-if="state.errorMessage">
+                                        <t t-esc="state.errorMessage"/>
+                                    </t>
+                                    <t t-else="">
+                                        Face not recognized. Please try again.
+                                    </t>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; justify-content: center; gap: 15px;">
+                            <!-- Start Button (visible when ready) -->
+                            <button t-if="state.scanningStatus === 'ready'"
+                                    t-on-click="_startFaceScanning"
+                                    style="background: linear-gradient(to right, #4CAF50, #45a049); color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-weight: bold;">
+                                Start Face Recognition
+                            </button>
+                            
+                            <!-- Cancel Scanning Button (visible when scanning) -->
+                            <button t-if="state.scanningStatus === 'scanning'"
+                                    t-on-click="_cancelScanning"
+                                    style="background: linear-gradient(to right, #e74c3c, #c0392b); color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-weight: bold;">
+                                Cancel Scanning
+                            </button>
+                            
+                            <!-- Try Again Button (visible when failed) -->
+                            <button t-if="state.scanningStatus === 'failed'"
+                                    t-on-click="_startFaceScanning"
+                                    style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-weight: bold;">
+                                Try Again
+                            </button>
+                            
+                            <!-- Close/Back Button for attendance error -->
+                            <button t-if="state.scanningStatus === 'attendance_error'"
+                                    t-on-click="_closeCameraModal"
+                                    style="background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-weight: bold;">
+                                Back to Manual Selection
+                            </button>
+                            
+                            <!-- Cancel/Close Button for other states -->
+                            <button t-if="state.scanningStatus !== 'attendance_error'"
+                                    t-on-click="_closeCameraModal"
+                                    style="background: #95a5a6; color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-weight: bold;">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                
+                <!-- CSS Animation -->
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    button:hover {
+                        opacity: 0.9;
+                        transform: translateY(-2px);
+                    }
+                    button:active {
+                        transform: translateY(0);
+                    }
+                </style>
+            </CardLayout>
         </xpath>
     </t>
 </templates>
